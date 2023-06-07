@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Quiz Application</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <h1>Quiz Application</h1>
+    <div id="quiz"></div>
+    <button id="submit">Submit</button>
+    <script>
+      // Define quiz questions and answers
+      const quizData = [
+        {
+          question: "What is the capital of France?",
+          answers: [
+            "London",
+            "Paris",
+            "Madrid",
+            "Berlin"
+          ],
+          correctAnswer: "Paris"
+        },
+        {
+          question: "What is the largest ocean in the world?",
+          answers: [
+            "Pacific Ocean",
+            "Indian Ocean",
+            "Atlantic Ocean",
+            "Arctic Ocean"
+          ],
+          correctAnswer: "Pacific Ocean"
+        },
+        {
+          question: "What is the highest mountain in the world?",
+          answers: [
+            "Mount Everest",
+            "K2",
+            "Makalu",
+            "Cho Oyu"
+          ],
+          correctAnswer: "Mount Everest"
+        }
+      ];
+
+      // Create quiz questions and answers
+      const quizContainer = document.getElementById("quiz");
+      const submitButton = document.getElementById("submit");
+      function createQuiz() {
+        const output = [];
+        quizData.forEach((question, index) => {
+          const answers = [];
+          for (const answer of question.answers) {
+            answers.push(`
+              <label>
+                <input type="radio" name="question${index}" value="${answer}">
+                ${answer}
+              </label>
+            `);
+          }
+          output.push(`
+            <div class="question">
+              <h3>${question.question}</h3>
+              <div class="answers">${answers.join("")}</div>
+            </div>
+          `);
+        });
+        quizContainer.innerHTML = output.join("");
+      }
+
+      // Calculate score and display result
+      function showResult() {
+        const answerContainers = quizContainer.querySelectorAll(".answers");
+        let score = 0;
+        let numCorrect = 0;
+        quizData.forEach((question, index) => {
+          const answerContainer = answerContainers[index];
+          const selector = `input[name=question${index}]:checked`;
+          const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+          if (userAnswer === question.correctAnswer) {
+            score += 1;
+            numCorrect += 1;
+          } else {
+            answerContainer.classList.add("incorrect");
+          }
+        });
+        if (score >= 2) {
+          quizContainer.innerHTML += `
+            <div class="result">
+              <h3>Congratulations, you won!</h3>
+            //   <img src="https://media.giphy.com/media/3o6ZtiyjOg6F9OJDDy/giphy.gif">
+            </div>
+          `;
+        } else {
+          quizContainer.innerHTML += `
+            <div class="result">
+              <h3>Sorry, you lost!</h3>
+            //   <img src="https://media.giphy.com/media/3o6ZsTjJNFkKJLKVgY/giphy.gif">
+            </div>
+          `;
+        }
+        quizContainer.innerHTML += `
+          <div class="score">
+            <p>Your score: ${score}/${quizData.length}</p>
+          </div>
+        `;
+        submitButton.disabled = true;
+      }
+
+      // Initialize quiz
+      createQuiz();
+      submitButton.addEventListener("click", showResult  );
+</script>
+<style>
+  .question {
+    margin-bottom: 20px;
+  }
+  .answers {
+    margin-bottom: 10px;
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  .incorrect {
+    color: red;
+  }
+  .result {
+    margin-top: 30px;
+    text-align: center;
+  }
+  .score {
+    margin-top: 10px;
+    text-align: center;
+  }
+</style>
+</body>
+</html>
